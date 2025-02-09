@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "970414682225",
+    "firebase_url": "https://smart-apiary-2112f-default-rtdb.firebaseio.com",
+    "project_id": "smart-apiary-2112f",
+    "storage_bucket": "smart-apiary-2112f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:970414682225:android:725fd1e00a0d18791a6bd0",
+        "android_client_info": {
+          "package_name": "kg.kstu.smartapiary"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDS1UTSm74QHftKfypkqcioeTi0ConKLeg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
