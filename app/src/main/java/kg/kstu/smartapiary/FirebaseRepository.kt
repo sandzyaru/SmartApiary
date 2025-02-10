@@ -3,6 +3,7 @@ package kg.kstu.smartapiary
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.database.FirebaseDatabase
+import kg.kstu.smartapiary.domain.ApiaryData
 
 class FirebaseRepository {
 

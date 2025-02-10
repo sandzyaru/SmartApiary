@@ -1,4 +1,4 @@
-package kg.kstu.smartapiary
+package kg.kstu.smartapiary.domain
 
 data class ApiaryData(
     val temperature: String? = null,

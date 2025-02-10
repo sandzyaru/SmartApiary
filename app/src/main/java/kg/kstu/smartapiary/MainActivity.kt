@@ -4,18 +4,25 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
+import kg.kstu.smartapiary.presentation.MainScreen
+import kg.kstu.smartapiary.presentation.screens.auth.AuthScreen
+import kg.kstu.smartapiary.presentation.screens.auth.viewmodel.AuthState
+import kg.kstu.smartapiary.presentation.screens.auth.viewmodel.AuthViewModel
+import kg.kstu.smartapiary.presentation.screens.auth.viewmodel.AuthViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
@@ -24,16 +31,36 @@ class MainActivity : ComponentActivity() {
             MaterialTheme(colorScheme = lightColorScheme()) {
                 ApiaryScreen()
             }
+           // MyApp()
         }
     }
 }
+
+@Composable
+fun MyApp() {
+    val navController = rememberNavController()
+
+    // Получаем FirebaseAuth (например, через зависимость или из контекста)
+    val firebaseAuth = FirebaseAuth.getInstance()
+
+    // Используем фабрику для создания AuthViewModel
+    val authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(firebaseAuth))
+
+    val userState by authViewModel.authState.collectAsState()
+
+    NavHost(navController, startDestination = if (userState is AuthState.Success) "main" else "auth") {
+        composable("auth") { AuthScreen(authViewModel, navController) }
+        composable("main") { MainScreen(navController) }
+    }
+}
+
 
 
 @Composable
 fun ApiaryScreen(viewModel: ApiaryViewModel = viewModel(factory = ApiaryViewModelFactory(FirebaseRepository()))) {
     val apiaryData by viewModel.apiaryData.collectAsState()
 
-    // Логи для отладки
+
     Log.d("FirebaseDebug", "ApiaryScreen: Current data: $apiaryData")
 
     Scaffold(
@@ -48,7 +75,7 @@ fun ApiaryScreen(viewModel: ApiaryViewModel = viewModel(factory = ApiaryViewMode
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Основной логотип приложения
+
             Image(
                 painter = painterResource(id = R.drawable.ic_apiary), // Логотип ic_bee.jpg
                 contentDescription = "Apiary",
@@ -57,7 +84,7 @@ fun ApiaryScreen(viewModel: ApiaryViewModel = viewModel(factory = ApiaryViewMode
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Карточки с параметрами
+
             DataCard(
                 title = "Temperature",
                 value = "${apiaryData.temperature ?: "N/A"} °C",
@@ -89,7 +116,7 @@ fun ApiaryScreen(viewModel: ApiaryViewModel = viewModel(factory = ApiaryViewMode
                 iconRes = R.drawable.ic_weight
             )
 
-            // Состояние подключения
+
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = if (apiaryData.connect) "Connected" else "Disconnected",

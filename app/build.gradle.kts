@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services") // Плагин Google Services
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -79,4 +80,9 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    //
+    implementation ("androidx.room:room-runtime:2.6.1")
+    ksp ("androidx.room:room-compiler:2.6.1") // Для использования аннотаций
+    implementation ("androidx.room:room-ktx:2.6.1") // Kotlin Extensions and Coroutines support for Room
 }
