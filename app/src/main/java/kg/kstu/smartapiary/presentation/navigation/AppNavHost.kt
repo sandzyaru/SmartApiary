@@ -25,7 +25,7 @@ fun AppNavHost(
     ) {
         composable("auth") { AuthScreen(navController, userRepository) }
         composable("register") { RegisterScreen(navController, userRepository) }
-        composable("main") { MainScreen(navController, userRepository) }
+        composable("main") { MainScreen(userRepository) }
     }
 }
 
