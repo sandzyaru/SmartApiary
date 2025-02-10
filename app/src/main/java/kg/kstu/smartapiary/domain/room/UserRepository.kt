@@ -5,15 +5,26 @@ import com.google.firebase.auth.AuthResult
 import kg.kstu.smartapiary.domain.User
 import kg.kstu.smartapiary.domain.UserDao
 
-open class UserRepository(private val userDao: UserDao) {
-    suspend fun getUser(userId: String): User? = userDao.getUserById(userId)
-    open suspend fun insertUser(user: User) = userDao.insertUser(user)
-    suspend fun deleteUser() = userDao.deleteUser()
-    open suspend fun login(email: String, password: String): Task<AuthResult> {
-        TODO("Not yet implemented")
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.tasks.await
+
+open class UserRepository(private val userDao: UserDao, private val firebaseAuth: FirebaseAuth) {
+
+    suspend fun getUser(): User? = userDao.getUserById(firebaseAuth.currentUser?.uid ?: "")
+
+    suspend fun insertUser(user: User) = userDao.insertUser(user)
+
+    suspend fun deleteUser() {
+        userDao.deleteUser()
+        firebaseAuth.signOut()
     }
 
-    open suspend fun register(email: String, password: String): Task<AuthResult> {
-        TODO("Not yet implemented")
+    open suspend fun login(email: String, password: String): Boolean {
+        return false // Базовая заглушка, переопределяется в FirebaseUserRepository
+    }
+
+    open suspend fun register(email: String, password: String): Boolean {
+        return false // Базовая заглушка, переопределяется в FirebaseUserRepository
     }
 }
+

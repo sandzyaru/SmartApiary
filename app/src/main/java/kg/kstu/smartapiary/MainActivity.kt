@@ -1,5 +1,6 @@
 package kg.kstu.smartapiary
 
+import android.content.Context
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,53 +9,44 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.firebase.auth.FirebaseAuth
-import kg.kstu.smartapiary.presentation.MainScreen
-import kg.kstu.smartapiary.presentation.screens.auth.AuthScreen
-import kg.kstu.smartapiary.presentation.screens.auth.viewmodel.AuthState
-import kg.kstu.smartapiary.presentation.screens.auth.viewmodel.AuthViewModel
-import kg.kstu.smartapiary.presentation.screens.auth.viewmodel.AuthViewModelFactory
+import kg.kstu.smartapiary.domain.repository.FirebaseUserRepository
+import kg.kstu.smartapiary.domain.room.AppDatabase
+import kg.kstu.smartapiary.presentation.navigation.AppNavHost
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MaterialTheme(colorScheme = lightColorScheme()) {
+        /*    MaterialTheme(colorScheme = lightColorScheme()) {
                 ApiaryScreen()
-            }
-           // MyApp()
+            }*/
+            MyApp(context = this)
         }
     }
 }
 
 @Composable
-fun MyApp() {
+fun MyApp(context: Context) {
     val navController = rememberNavController()
+    val database = remember { AppDatabase.getDatabase(context) }
+    val userRepository = remember { FirebaseUserRepository(database.userDao(), FirebaseAuth.getInstance()) }
+    var isUserLoggedIn by rememberSaveable { mutableStateOf(false) }
 
-    // Получаем FirebaseAuth (например, через зависимость или из контекста)
-    val firebaseAuth = FirebaseAuth.getInstance()
-
-    // Используем фабрику для создания AuthViewModel
-    val authViewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory(firebaseAuth))
-
-    val userState by authViewModel.authState.collectAsState()
-
-    NavHost(navController, startDestination = if (userState is AuthState.Success) "main" else "auth") {
-        composable("auth") { AuthScreen(authViewModel, navController) }
-        composable("main") { MainScreen(navController) }
+    LaunchedEffect(Unit) {
+        isUserLoggedIn = userRepository.getUser() != null
     }
+
+    AppNavHost(navController = navController, isUserLoggedIn = isUserLoggedIn, userRepository = userRepository)
 }
-
-
 
 @Composable
 fun ApiaryScreen(viewModel: ApiaryViewModel = viewModel(factory = ApiaryViewModelFactory(FirebaseRepository()))) {

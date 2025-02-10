@@ -6,6 +6,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -16,12 +17,13 @@ import kg.kstu.smartapiary.presentation.screens.SettingsScreen
 import kg.kstu.smartapiary.presentation.screens.auth.RegisterScreen
 
 
-sealed class Screen(val route: String, val title: String, val icon: androidx.compose.ui.graphics.vector.ImageVector) {
-    object Home : Screen("home", "Главная", Icons.Filled.Home)
-    object Profile : Screen("profile", "Профиль", Icons.Filled.Person)
-    object Settings : Screen("settings", "Настройки", Icons.Filled.Settings)
+sealed class Screen(val route: String, val icon: ImageVector, val title: String) {
+    object Apiary : Screen("apiary", Icons.Default.Home, "Главная")
+    object Diary : Screen("diary", Icons.Default.Person, "Профиль")
+    object Settings : Screen("settings", Icons.Default.Settings, "Настройки")
+
+    companion object {
+        val items = listOf(Apiary, Diary, Settings)
+    }
 }
-
-val bottomNavItems = listOf(Screen.Home, Screen.Profile, Screen.Settings)
-
 

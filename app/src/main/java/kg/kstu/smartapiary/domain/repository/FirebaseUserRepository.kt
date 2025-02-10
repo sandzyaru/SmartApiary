@@ -9,40 +9,35 @@ import kg.kstu.smartapiary.domain.room.UserRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
-class FirebaseUserRepository(private val userDao: UserDao) : UserRepository(userDao) {
+class FirebaseUserRepository(userDao: UserDao, private val firebaseAuth: FirebaseAuth) :
+    UserRepository(userDao, firebaseAuth) {
 
-    override suspend fun register(email: String, password: String): Task<AuthResult> {
-        return FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = FirebaseAuth.getInstance().currentUser
-                    user?.let {
-                        val userEntity = User(user.uid, user.email ?: "")
-                        // Insert the user in the local database
-                        CoroutineScope(Dispatchers.IO).launch {
-                            insertUser(userEntity)
-                        }
-                    }
-                }
-            }
+    override suspend fun login(email: String, password: String): Boolean {
+        return try {
+            val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            result.user?.let {
+                insertUser(User(it.uid, it.email ?: ""))
+                true
+            } ?: false
+        } catch (e: Exception) {
+            false
+        }
     }
 
-    override suspend fun login(email: String, password: String): Task<AuthResult> {
-        return FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val user = FirebaseAuth.getInstance().currentUser
-                    user?.let {
-                        val userEntity = User(user.uid, user.email ?: "")
-                        // Insert the user in the local database
-                        CoroutineScope(Dispatchers.IO).launch {
-                            insertUser(userEntity)
-                        }
-                    }
-                }
-            }
+    override suspend fun register(email: String, password: String): Boolean {
+        return try {
+            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            result.user?.let {
+                insertUser(User(it.uid, it.email ?: ""))
+                true
+            } ?: false
+        } catch (e: Exception) {
+            false
+        }
     }
 }
+
 
 
