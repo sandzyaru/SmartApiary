@@ -1,14 +1,10 @@
 package kg.kstu.smartapiary.domain.room
 
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import kg.kstu.smartapiary.domain.User
-import kg.kstu.smartapiary.domain.UserDao
 
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 
-open class UserRepository(private val userDao: UserDao, private val firebaseAuth: FirebaseAuth) {
+open class UserRepository(protected val userDao: UserDao, private val firebaseAuth: FirebaseAuth) {
 
     suspend fun getUser(): User? = userDao.getUserById(firebaseAuth.currentUser?.uid ?: "")
 
@@ -20,11 +16,21 @@ open class UserRepository(private val userDao: UserDao, private val firebaseAuth
     }
 
     open suspend fun login(email: String, password: String): Boolean {
-        return false // Базовая заглушка, переопределяется в FirebaseUserRepository
+        return try {
+            val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+            result.user?.let {
+                val user = User(it.uid, it.email ?: "")
+                insertUser(user) // Сохраняем в Room
+                true
+            } ?: false
+        } catch (e: Exception) {
+            false
+        }
     }
 
+
     open suspend fun register(email: String, password: String): Boolean {
-        return false // Базовая заглушка, переопределяется в FirebaseUserRepository
+        return false
     }
 }
 

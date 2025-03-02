@@ -17,54 +17,54 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import kg.kstu.smartapiary.domain.room.UserRepository
+import kg.kstu.smartapiary.presentation.screens.viewmodel.AuthViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
 @Composable
-fun RegisterScreen(navController: NavHostController, userRepository: UserRepository) {
-    var state by rememberSaveable(stateSaver = AuthStateSaver) { mutableStateOf(AuthState()) }
+fun RegisterScreen(navController: NavController, viewModel: AuthViewModel = hiltViewModel()) {
+    var email by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        TextField(value = state.email, onValueChange = { state = state.copy(email = it) }, label = { Text("Email") })
-
+    Column {
         TextField(
-            value = state.password,
-            onValueChange = { state = state.copy(password = it) },
-            label = { Text("Password") },
-            visualTransformation = PasswordVisualTransformation()
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") }
         )
-
-        Button(
-            onClick = {
-                state = state.copy(isLoading = true, errorMessage = null)
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    val success = userRepository.register(state.email, state.password)
-                    withContext(Dispatchers.Main) {
-                        state = state.copy(isLoading = false)
-                        if (success) navController.navigate("auth") else state = state.copy(errorMessage = "Ошибка регистрации")
-                    }
+        TextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") }
+        )
+        Button(onClick = {
+            viewModel.viewModelScope.launch {
+                val success = viewModel.register(email, password)
+                if (success) {
+                    navController.popBackStack() // Назад на auth
+                } else {
+                    errorMessage = "Ошибка регистрации"
                 }
-            },
-            enabled = !state.isLoading
-        ) {
-            Text(if (state.isLoading) "Registering..." else "Register")
+            }
+        }) {
+            Text("Зарегистрироваться")
         }
-
-        if (state.errorMessage != null) {
-            Text(text = state.errorMessage!!, color = Color.Red)
+        Button(onClick = { navController.popBackStack() }) {
+            Text("Назад")
+        }
+        errorMessage?.let {
+            Text(it, color = Color.Red)
         }
     }
 }
+
 
 
