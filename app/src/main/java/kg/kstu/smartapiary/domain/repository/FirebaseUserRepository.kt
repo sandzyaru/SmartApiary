@@ -32,7 +32,6 @@ class FirebaseUserRepository(userDao: UserDao, private val firebaseAuth: Firebas
         }
     }
 
-
     override suspend fun register(email: String, password: String): Boolean {
         return try {
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()

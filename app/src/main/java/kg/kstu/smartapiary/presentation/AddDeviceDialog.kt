@@ -35,9 +35,7 @@ fun AddDeviceDialog(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(uiState) {
-        if (uiState is ApiaryState.Success) {
-            onDismiss()
-        } else if (uiState is ApiaryState.Error) {
+        if (uiState is ApiaryState.Error) {
             errorText = (uiState as ApiaryState.Error).message
         }
     }

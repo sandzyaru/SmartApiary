@@ -1,5 +1,7 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
+package kg.kstu.smartapiary.presentation.screens
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,6 +19,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -25,14 +30,30 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import kg.kstu.smartapiary.presentation.screens.viewmodel.ApiaryDetailsScreenViewModel
 
 @Composable
 fun ApiaryDetailsScreen(hiveId: String, navController: NavHostController) {
-    val weightData = listOf(1.1f, 1.5f, 1.3f, 1.8f, 2.0f, 2.2f, 2.4f) // Вес (кг)
-    val tempData = listOf(20f, 21f, 23f, 24f, 22f, 25f, 26f) // Температура (°C)
-    val humidityData = listOf(60f, 65f, 70f, 75f, 80f, 85f, 90f) // Влажность (%)
-    val signalData = listOf(-80f, -75f, -70f, -68f, -65f, -60f, -58f) // Сигнал (dB)
+    val viewModel: ApiaryDetailsScreenViewModel = hiltViewModel()
+    val graphicsData by viewModel.graphicsData.collectAsState()
+
+    val titles = mapOf(
+        "humidity" to "Влажность (%)",
+        "strength_signal" to "Уровень сигнала (dB)",
+        "temp" to "Температура (°C)",
+        "weight" to "Вес (кг)"
+    )
+
+    val units = mapOf(
+        "humidity" to "%",
+        "strength_signal" to "dB",
+        "temp" to "°C",
+        "weight" to "кг"
+    )
+
+    LaunchedEffect(hiveId) { viewModel.loadGraphicsData(hiveId) }
 
     Scaffold(
         topBar = {
@@ -54,26 +75,15 @@ fun ApiaryDetailsScreen(hiveId: String, navController: NavHostController) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(text = "Графики параметров", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-
-            // 📊 График веса
-            Text(text = "Вес (кг)", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-            LineChartCanvas(weightData, Color.Blue, "кг")
-
-            // 📊 График температуры
-            Text(text = "Температура (°C)", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-            LineChartCanvas(tempData, Color.Red, "°C")
-
-            // 📊 График влажности
-            Text(text = "Влажность (%)", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-            LineChartCanvas(humidityData, Color.Green, "%")
-
-            // 📊 График уровня сигнала
-            Text(text = "Уровень сигнала (dB)", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-            LineChartCanvas(signalData, Color.Magenta, "dB")
+            graphicsData.forEach { (param, values) ->
+                val title = titles[param] ?: param
+                val unit = units[param] ?: ""
+                Text(text = title, fontSize = 18.sp, fontWeight = FontWeight.Medium)
+                LineChartCanvas(values.values.map { it.toFloat() }, Color.Yellow, unit)
+            }
         }
     }
 }
-
 
 
 @Composable

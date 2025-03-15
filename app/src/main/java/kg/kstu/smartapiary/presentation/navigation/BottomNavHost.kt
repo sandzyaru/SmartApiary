@@ -1,6 +1,6 @@
 package kg.kstu.smartapiary.presentation.navigation
 
-import ApiaryDetailsScreen
+import kg.kstu.smartapiary.presentation.screens.ApiaryDetailsScreen
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,7 +13,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import kg.kstu.smartapiary.domain.mvi.ApiaryState
 import kg.kstu.smartapiary.presentation.AddDeviceDialog
 import kg.kstu.smartapiary.presentation.screens.ApiaryScreen
 import kg.kstu.smartapiary.presentation.screens.DiaryScreen
@@ -31,6 +30,7 @@ fun BottomNavHost(navController: NavHostController) {
             ApiaryScreen(
                 viewModel = apiaryViewModel,
                 onHiveClick = { hiveId -> navController.navigate("apiaryDetails/$hiveId") },
+                // Упрощённая логика: просто открываем диалог
                 onAddDeviceClick = { showDialog = true }
             )
         }
@@ -46,18 +46,12 @@ fun BottomNavHost(navController: NavHostController) {
         }
     }
 
-    // Проверяем, есть ли доступные пасеки
-    val hasApiaries = apiaryState is ApiaryState.Success && (apiaryState as ApiaryState.Success).hives.isNotEmpty()
-
+    // Если showDialog = true, показываем диалог AddDeviceDialog
     if (showDialog) {
-        if (hasApiaries) {
-            AddDeviceDialog(
-                viewModel = apiaryViewModel,
-                onDismiss = { showDialog = false }
-            )
-        } else {
-            showDialog = false // Закрываем диалог, если пасек нет
-        }
+        AddDeviceDialog(
+            viewModel = apiaryViewModel,
+            onDismiss = { showDialog = false }
+        )
     }
 }
 
