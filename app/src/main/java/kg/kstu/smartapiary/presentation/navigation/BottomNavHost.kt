@@ -15,7 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import kg.kstu.smartapiary.presentation.AddDeviceDialog
 import kg.kstu.smartapiary.presentation.screens.ApiaryScreen
-import kg.kstu.smartapiary.presentation.screens.DiaryScreen
+import kg.kstu.smartapiary.presentation.screens.diary.DiaryScreen
 import kg.kstu.smartapiary.presentation.screens.SettingsScreen
 import kg.kstu.smartapiary.presentation.screens.viewmodel.ApiaryViewModel
 

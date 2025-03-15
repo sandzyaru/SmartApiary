@@ -8,12 +8,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 import kg.kstu.smartapiary.domain.repository.ApiaryRepository
 import kg.kstu.smartapiary.domain.repository.FirebaseUserRepository
 import kg.kstu.smartapiary.domain.room.AppDatabase
 import kg.kstu.smartapiary.domain.room.UserDao
 import kg.kstu.smartapiary.domain.room.UserRepository
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -31,9 +31,6 @@ object AppModule {
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase =
         AppDatabase.getDatabase(context)
-
-    @Provides
-    fun provideUserDao(database: AppDatabase): UserDao = database.userDao()
 
     @Provides
     @Singleton
