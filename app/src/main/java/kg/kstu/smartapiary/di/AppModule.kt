@@ -34,8 +34,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserRepository(userDao: UserDao, auth: FirebaseAuth): UserRepository =
-        FirebaseUserRepository(userDao, auth)
+    fun provideUserRepository(userDao: UserDao, auth: FirebaseAuth, firebaseDatabase: FirebaseDatabase ): UserRepository =
+        FirebaseUserRepository(userDao, auth, firebaseDatabase)
 
     @Provides
     @Singleton

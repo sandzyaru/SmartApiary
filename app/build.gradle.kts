@@ -66,6 +66,10 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     val nav_version = "2.8.6"
 
+    //visibility
+    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.31.1-alpha")
+
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
     // Firebase dependencies

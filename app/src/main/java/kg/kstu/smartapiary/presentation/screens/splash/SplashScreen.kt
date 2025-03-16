@@ -1,10 +1,5 @@
-package kg.kstu.smartapiary.presentation.screens
+package kg.kstu.smartapiary.presentation.screens.splash
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,5 +47,3 @@ fun SplashScreen() {
         }
     }
 }
-
-

@@ -1,4 +1,4 @@
-package kg.kstu.smartapiary.presentation
+package kg.kstu.smartapiary.presentation.screens.apiary.add_device
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

@@ -1,20 +1,22 @@
-package kg.kstu.smartapiary
+package kg.kstu.smartapiary.presentation.main
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kg.kstu.smartapiary.presentation.MainScreen
-import kg.kstu.smartapiary.presentation.screens.SplashScreen
 import kg.kstu.smartapiary.presentation.screens.auth.AuthScreen
 import kg.kstu.smartapiary.presentation.screens.auth.RegisterScreen
+import kg.kstu.smartapiary.presentation.screens.splash.SplashScreen
 import kg.kstu.smartapiary.presentation.screens.viewmodel.AuthViewModel
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -46,13 +48,7 @@ fun MyApp(viewModel: AuthViewModel = hiltViewModel()) {
         ) {
             composable("auth") { AuthScreen(navController) }
             composable("register") { RegisterScreen(navController) }
-            composable("main") { MainScreen() }
+            composable("main") { MainScreen(navController) }
         }
     }
 }
-
-
-
-
-
-

@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kg.kstu.smartapiary.R
 import kg.kstu.smartapiary.domain.data.ApiaryData
-import kg.kstu.smartapiary.presentation.screens.InfoItem
 
 @Composable
 fun ApiaryCard(hive: ApiaryData, onHiveClick: (String) -> Unit) {

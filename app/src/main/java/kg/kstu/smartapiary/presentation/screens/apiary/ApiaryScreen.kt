@@ -1,11 +1,8 @@
-package kg.kstu.smartapiary.presentation.screens
+package kg.kstu.smartapiary.presentation.screens.apiary
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,16 +19,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kg.kstu.smartapiary.domain.mvi.ApiaryIntent
 import kg.kstu.smartapiary.domain.mvi.ApiaryState
-import kg.kstu.smartapiary.presentation.screens.apiary.ApiaryCard
 import kg.kstu.smartapiary.presentation.screens.viewmodel.ApiaryViewModel
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ApiaryScreen(
@@ -90,30 +82,3 @@ fun ApiaryScreen(
         }
     }
 }
-
-@Composable
-fun InfoItem(iconId: Int, value: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
-    ) {
-        Icon(
-            painter = painterResource(id = iconId),
-            contentDescription = null,
-            tint = Color(0xFFFBC803),
-            modifier = Modifier.size(28.dp)
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            fontSize = 18.sp
-        )
-    }
-}
-
-
-
-
-
-
-
